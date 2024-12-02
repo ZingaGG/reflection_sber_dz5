@@ -1,8 +1,16 @@
 package org.example.Impls;
 
+import lombok.Getter;
 import org.example.Interface.Calculator;
 
+@Getter
 public class BigCalculatorImpl implements Calculator{
+
+    public static final String SUN = "SUN";
+
+    public static final String MOON = "MOON";
+
+    private int a;
     @Override
     public int factorialCalc(int number) {
         int result = 1;
