@@ -3,6 +3,8 @@ package org.example.Service;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ReflectionUtils {
 
@@ -21,12 +23,28 @@ public class ReflectionUtils {
         }
     }
 
-    public static void getAllGetters(Class<?> clazz){
+    public static List<Method> getAllGetters(Class<?> clazz){
+        List<Method> res = new ArrayList<>();
         for (Method method : clazz.getDeclaredMethods()) {
             if(isGetter(method, clazz.getDeclaredFields())){
                 System.out.println(method);
+                res.add(method);
             }
         }
+
+        return res;
+    }
+
+    public static List<Method> getAllSetters(Class<?> clazz){
+        List<Method> res = new ArrayList<>();
+        for (Method method : clazz.getDeclaredMethods()) {
+            if(isSetter(method, clazz.getDeclaredFields())){
+                System.out.println(method);
+                res.add(method);
+            }
+        }
+
+        return res;
     }
 
     // Я понимаю, что метод(геттер) могут назвать по другому, я надеюсь, что класс откуда мы достаем геттеры,
@@ -34,6 +52,18 @@ public class ReflectionUtils {
     private static boolean isGetter(Method method, Field[] fields){
         for (Field field : fields) {
             if(method.getName().startsWith("get") &&
+                    method.getName().toLowerCase().contains(field.getName().toLowerCase())){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // Я понимаю, что метод(сеттер) могут назвать по другому, я надеюсь, что класс откуда мы достаем геттеры,
+    // написан по правилам программирования и оформления кода
+    private static boolean isSetter(Method method, Field[] fields){
+        for (Field field : fields) {
+            if(method.getName().startsWith("set") &&
                     method.getName().toLowerCase().contains(field.getName().toLowerCase())){
                 return true;
             }

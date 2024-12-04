@@ -3,11 +3,15 @@ package org.example;
 import org.example.Impls.BigCalculatorImpl;
 import org.example.Impls.CalculatorImpl;
 import org.example.Interface.Calculator;
+import org.example.Model.Admin;
+import org.example.Model.User;
 import org.example.Proxy.CachedInvocationHandler;
+import org.example.Service.BeanUtils;
 import org.example.Service.PerformanceProxy;
 import org.example.Service.ReflectionUtils;
 
 import java.lang.reflect.Proxy;
+import java.sql.Ref;
 import java.time.LocalDateTime;
 
 public class Main {
@@ -60,5 +64,16 @@ public class Main {
 
         Calculator perfCalculator = PerformanceProxy.createProxy(delegate, Calculator.class);
         System.out.println("\n" + perfCalculator.factorialCalc(3));
+
+        System.out.println("----------------------------------------");
+        System.out.println("Starting part with BeanUtils!");
+        System.out.println("----------------------------------------");
+
+        User user = new User(25, "Ivanov");
+        Admin admin = new Admin(10, "Ivan");
+
+        BeanUtils.assign(admin, user);
+
+        System.out.println(admin); // Change the correspondent setter for field "age", from '10' -> '25'
     }
 }
