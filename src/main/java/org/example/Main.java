@@ -3,22 +3,29 @@ package org.example;
 import org.example.Impls.BigCalculatorImpl;
 import org.example.Impls.CalculatorImpl;
 import org.example.Interface.Calculator;
+import org.example.Proxy.CachedInvocationHandler;
 import org.example.Service.ReflectionUtils;
+
+import java.lang.reflect.Proxy;
+import java.time.LocalDateTime;
 
 public class Main {
     public static void main(String[] args) throws IllegalAccessException {
-        Calculator calculator = new CalculatorImpl();
+        Calculator delegate = new CalculatorImpl();
         Calculator bigCalculator = new BigCalculatorImpl();
 
+        Calculator calculator = (Calculator) Proxy.newProxyInstance(Calculator.class.getClassLoader(),
+                new Class<?>[]{Calculator.class}, // I put the exact interface in this line, cuz "delegate" does not implement "Calculator" directly
+                new CachedInvocationHandler(delegate));
 
         System.out.println("\nВывод всех методов класса: ");
-        ReflectionUtils.outDeclaredMethods(calculator.getClass());
+        ReflectionUtils.outDeclaredMethods(delegate.getClass());
 
         System.out.println("\nВывод всех методов класса с наследованием: ");
-        ReflectionUtils.outAllMethodsHierarchy(calculator.getClass());
+        ReflectionUtils.outAllMethodsHierarchy(delegate.getClass());
 
         System.out.println("\nВывод всех геттеров класса: ");
-        ReflectionUtils.getAllGetters(calculator.getClass());
+        ReflectionUtils.getAllGetters(delegate.getClass());
 
         System.out.println("\nВывод всех геттеров класса (тест с Lombok): ");
         ReflectionUtils.getAllGetters(bigCalculator.getClass());
@@ -27,6 +34,25 @@ public class Main {
         System.out.println(ReflectionUtils.stringFieldsCheck(bigCalculator.getClass()));
 
         System.out.println("\nПроверить что все String константы имеют значение = их имени: ");
-        System.out.println(ReflectionUtils.stringFieldsCheck(calculator.getClass()));
+        System.out.println(ReflectionUtils.stringFieldsCheck(delegate.getClass()));
+
+        // Part of task using Proxy
+        System.out.println("----------------------------------------");
+        System.out.println("Starting part with Caching Proxy!");
+        System.out.println("----------------------------------------");
+
+        System.out.println("\nSTART:"+LocalDateTime.now());
+        System.out.println(calculator.factorialCalc(1));
+        System.out.println(calculator.factorialCalc(5));
+        System.out.println(calculator.factorialCalc(6));
+        System.out.println(calculator.factorialCalc(1));
+        System.out.println(calculator.factorialCalc(1));
+        System.out.println(calculator.factorialCalc(1));
+        System.out.println(calculator.factorialCalc(1));
+        System.out.println(calculator.factorialCalc(1));
+        System.out.println(calculator.factorialCalc(1));
+        System.out.println("\nEND:"+ LocalDateTime.now());
+
+
     }
 }
