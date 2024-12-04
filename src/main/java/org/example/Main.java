@@ -4,6 +4,7 @@ import org.example.Impls.BigCalculatorImpl;
 import org.example.Impls.CalculatorImpl;
 import org.example.Interface.Calculator;
 import org.example.Proxy.CachedInvocationHandler;
+import org.example.Service.PerformanceProxy;
 import org.example.Service.ReflectionUtils;
 
 import java.lang.reflect.Proxy;
@@ -41,7 +42,6 @@ public class Main {
         System.out.println("Starting part with Caching Proxy!");
         System.out.println("----------------------------------------");
 
-        System.out.println("\nSTART:"+LocalDateTime.now());
         System.out.println(calculator.factorialCalc(1));
         System.out.println(calculator.factorialCalc(5));
         System.out.println(calculator.factorialCalc(6));
@@ -51,8 +51,14 @@ public class Main {
         System.out.println(calculator.factorialCalc(1));
         System.out.println(calculator.factorialCalc(1));
         System.out.println(calculator.factorialCalc(1));
-        System.out.println("\nEND:"+ LocalDateTime.now());
 
+        // Performance Proxy
 
+        System.out.println("----------------------------------------");
+        System.out.println("Starting part with Performing Proxy!");
+        System.out.println("----------------------------------------");
+
+        Calculator perfCalculator = PerformanceProxy.createProxy(delegate, Calculator.class);
+        System.out.println("\n" + perfCalculator.factorialCalc(3));
     }
 }
